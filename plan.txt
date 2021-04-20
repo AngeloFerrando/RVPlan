@@ -1,0 +1,5 @@
+(right rover cell_0-0 cell_1-0)
+(inspect-right rover cell_1-0 cell_2-0 tank1)
+(down rover cell_1-0 cell_1-1)
+(down rover cell_1-1 cell_1-2)
+(inspect-right rover cell_1-2 cell_2-2 tank2)
