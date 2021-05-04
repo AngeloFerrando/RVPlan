@@ -1,24 +1,23 @@
 prop fo_ltl_0 :
-	Forall r . Forall x . Forall y . ((act_up(r, x, y) -> @(robot_at(r, x) & up(x, y) & empty(y) & !radiation(y))) & ((@act_up(r, x, y)) -> (robot_at(r, y) & !robot_at(r, x) & empty(x) & !empty(y))))
+	Forall r . Forall x . Forall y . act_up(r, x, y) -> P(robot_at(r, x)) & (!(exists r1 . exists x1 . robot_at(r1, x1)) S robot_at(r, x)) & P(up(x, y)) & P(empty(y)) & (!(exists y1 . empty(y1)) S empty(y)) & P(!radiation(y))
 
 prop fo_ltl_1 :
-	Forall r . Forall x . Forall y . ((act_down(r, x, y) -> @(robot_at(r, x) & down(x, y) & empty(y) & !radiation(y))) & ((@act_down(r, x, y)) -> (robot_at(r, y) & !robot_at(r, x) & empty(x) & !empty(y))))
+	Forall r . Forall x . Forall y . act_down(r, x, y) -> P(robot_at(r, x)) & (!(exists r1 . exists x1 . robot_at(r1, x1)) S robot_at(r, x)) & P(down(x, y)) & P(empty(y)) & (!(exists y1 . empty(y1)) S empty(y)) & P(!radiation(y))
 
 prop fo_ltl_2 :
-	Forall r . Forall x . Forall y . ((act_right(r, x, y) -> @(robot_at(r, x) & right(x, y) & empty(y) & !radiation(y))) & ((@act_right(r, x, y)) -> (robot_at(r, y) & !robot_at(r, x) & empty(x) & !empty(y))))
+	Forall r . Forall x . Forall y . act_right(r, x, y) -> P(robot_at(r, x)) & (!(exists r1 . exists x1 . robot_at(r1, x1)) S robot_at(r, x)) & P(right(x, y)) & P(empty(y)) & (!(exists y1 . empty(y1)) S empty(y)) & P(!radiation(y))
 
 prop fo_ltl_3 :
-	Forall r . Forall x . Forall y . ((act_left(r, x, y) -> @(robot_at(r, x) & left(x, y) & empty(y) & !radiation(y))) & ((@act_left(r, x, y)) -> (robot_at(r, y) & !robot_at(r, x) & empty(x) & !empty(y))))
+	Forall r . Forall x . Forall y . act_left(r, x, y) -> P(robot_at(r, x)) & (!(exists r1 . exists x1 . robot_at(r1, x1)) S robot_at(r, x)) & P(left(x, y)) & P(empty(y)) & (!(exists y1 . empty(y1)) S empty(y)) & P(!radiation(y))
 
 prop fo_ltl_4 :
-	Forall r . Forall x . Forall y . Forall t . ((act_inspect_up(r, x, y, t) -> @(robot_at(r, x) & tank_at(t, y) & up(x, y) & !inspected(t))) & ((@act_inspect_up(r, x, y, t)) -> (inspected(t))))
+	Forall r . Forall x . Forall y . Forall t . act_inspect_up(r, x, y, t) -> P(robot_at(r, x)) & P(tank_at(t, y)) & P(up(x, y)) & P(!inspected(t))
 
 prop fo_ltl_5 :
-	Forall r . Forall x . Forall y . Forall t . ((act_inspect_down(r, x, y, t) -> @(robot_at(r, x) & tank_at(t, y) & down(x, y) & !inspected(t))) & ((@act_inspect_down(r, x, y, t)) -> (inspected(t))))
+	Forall r . Forall x . Forall y . Forall t . act_inspect_down(r, x, y, t) -> P(robot_at(r, x)) & P(tank_at(t, y)) & P(down(x, y)) & P(!inspected(t))
 
 prop fo_ltl_6 :
-	Forall r . Forall x . Forall y . Forall t . ((act_inspect_right(r, x, y, t) -> @(robot_at(r, x) & tank_at(t, y) & right(x, y) & !inspected(t))) & ((@act_inspect_right(r, x, y, t)) -> (inspected(t))))
+	Forall r . Forall x . Forall y . Forall t . act_inspect_right(r, x, y, t) -> P(robot_at(r, x)) & P(tank_at(t, y)) & P(right(x, y)) & P(!inspected(t))
 
 prop fo_ltl_7 :
-	Forall r . Forall x . Forall y . Forall t . ((act_inspect_left(r, x, y, t) -> @(robot_at(r, x) & tank_at(t, y) & left(x, y) & !inspected(t))) & ((@act_inspect_left(r, x, y, t)) -> (inspected(t))))
-
+	Forall r . Forall x . Forall y . Forall t . act_inspect_left(r, x, y, t) -> P(robot_at(r, x)) & P(tank_at(t, y)) & P(left(x, y)) & P(!inspected(t))

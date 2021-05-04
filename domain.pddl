@@ -2,7 +2,7 @@
 (:requirements :typing)
 (:types robot cell tank - object)
 
-(:predicates 	
+(:predicates
 	(robot-at ?r - robot ?x - cell)
 	(tank-at ?t - tank ?x - cell)
 	(up ?x - cell ?y - cell)
@@ -15,7 +15,7 @@
 )
 
 ; Robot movements
-(:action up 
+(:action up
   :parameters (?r - robot ?x - cell ?y - cell)
   :precondition (and (robot-at ?r ?x) (up ?x ?y) (empty ?y) (not (radiation ?y)))
   :effect (and (robot-at ?r ?y) (not (robot-at ?r ?x))
@@ -23,7 +23,7 @@
             )
 )
 
-(:action down 
+(:action down
   :parameters (?r - robot ?x - cell ?y - cell)
   :precondition (and (robot-at ?r ?x) (down ?x ?y) (empty ?y) (not (radiation ?y)))
   :effect (and (robot-at ?r ?y) (not (robot-at ?r ?x))
@@ -31,7 +31,7 @@
             )
 )
 
-(:action right 
+(:action right
   :parameters (?r - robot ?x - cell ?y - cell)
   :precondition (and (robot-at ?r ?x) (right ?x ?y) (empty ?y) (not (radiation ?y)))
   :effect (and (robot-at ?r ?y) (not (robot-at ?r ?x))
@@ -39,7 +39,7 @@
 	     )
 )
 
-(:action left 
+(:action left
   :parameters (?r - robot ?x - cell ?y - cell)
   :precondition (and (robot-at ?r ?x) (left ?x ?y) (empty ?y) (not (radiation ?y)))
   :effect (and (robot-at ?r ?y) (not (robot-at ?r ?x))
@@ -76,4 +76,3 @@
 )
 
 )
-
