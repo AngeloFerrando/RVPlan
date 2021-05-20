@@ -129,7 +129,3 @@ dmypy.json
 .pyre/
 
 *.scala
-replanning_server.py
-replanning_client.py
-websocket_server.py
-./online/
