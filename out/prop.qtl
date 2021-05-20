@@ -1,24 +1,15 @@
-prop fo_ltl_0 :
-	Forall r . Forall x . Forall y . act_up(r, x, y) -> (!not_robot_at(r, x) S robot_at(r, x)) & (!not_up(x, y) S up(x, y)) & (!not_empty(y) S empty(y)) & (!radiation(y) S not_radiation(y))
+prop ltl_0 :
+	H(act_right("rover", "cell_0_0", "cell_1_0") -> (!not_robot_at("rover", "cell_0_0") S robot_at("rover", "cell_0_0")) & (!not_right("cell_0_0", "cell_1_0") S right("cell_0_0", "cell_1_0")) & (!not_empty("cell_1_0") S empty("cell_1_0")) & (!radiation("cell_1_0") S not_radiation("cell_1_0")))
 
-prop fo_ltl_1 :
-	Forall r . Forall x . Forall y . act_down(r, x, y) -> (!not_robot_at(r, x) S robot_at(r, x)) & (!not_down(x, y) S down(x, y)) & (!not_empty(y) S empty(y)) & (!radiation(y) S not_radiation(y))
+prop ltl_1 :
+	H(act_inspect_right("rover", "cell_1_0", "cell_2_0", "tank1") -> (!not_robot_at("rover", "cell_1_0") S robot_at("rover", "cell_1_0")) & (!not_tank_at("tank1", "cell_2_0") S tank_at("tank1", "cell_2_0")) & (!not_right("cell_1_0", "cell_2_0") S right("cell_1_0", "cell_2_0")) & (!inspected("tank1") S not_inspected("tank1")))
 
-prop fo_ltl_2 :
-	Forall r . Forall x . Forall y . act_right(r, x, y) -> (!not_robot_at(r, x) S robot_at(r, x)) & (!not_right(x, y) S right(x, y)) & (!not_empty(y) S empty(y)) & (!radiation(y) S not_radiation(y))
+prop ltl_2 :
+	H(act_down("rover", "cell_1_0", "cell_1_1") -> (!not_robot_at("rover", "cell_1_0") S robot_at("rover", "cell_1_0")) & (!not_down("cell_1_0", "cell_1_1") S down("cell_1_0", "cell_1_1")) & (!not_empty("cell_1_1") S empty("cell_1_1")) & (!radiation("cell_1_1") S not_radiation("cell_1_1")))
 
-prop fo_ltl_3 :
-	Forall r . Forall x . Forall y . act_left(r, x, y) -> (!not_robot_at(r, x) S robot_at(r, x)) & (!not_left(x, y) S left(x, y)) & (!not_empty(y) S empty(y)) & (!radiation(y) S not_radiation(y))
+prop ltl_3 :
+	H(act_down("rover", "cell_1_1", "cell_1_2") -> (!not_robot_at("rover", "cell_1_1") S robot_at("rover", "cell_1_1")) & (!not_down("cell_1_1", "cell_1_2") S down("cell_1_1", "cell_1_2")) & (!not_empty("cell_1_2") S empty("cell_1_2")) & (!radiation("cell_1_2") S not_radiation("cell_1_2")))
 
-prop fo_ltl_4 :
-	Forall r . Forall x . Forall y . Forall t . act_inspect_up(r, x, y, t) -> (!not_robot_at(r, x) S robot_at(r, x)) & (!not_tank_at(t, y) S tank_at(t, y)) & (!not_up(x, y) S up(x, y)) & (!inspected(t) S not_inspected(t))
-
-prop fo_ltl_5 :
-	Forall r . Forall x . Forall y . Forall t . act_inspect_down(r, x, y, t) -> (!not_robot_at(r, x) S robot_at(r, x)) & (!not_tank_at(t, y) S tank_at(t, y)) & (!not_down(x, y) S down(x, y)) & (!inspected(t) S not_inspected(t))
-
-prop fo_ltl_6 :
-	Forall r . Forall x . Forall y . Forall t . act_inspect_right(r, x, y, t) -> (!not_robot_at(r, x) S robot_at(r, x)) & (!not_tank_at(t, y) S tank_at(t, y)) & (!not_right(x, y) S right(x, y)) & (!inspected(t) S not_inspected(t))
-
-prop fo_ltl_7 :
-	Forall r . Forall x . Forall y . Forall t . act_inspect_left(r, x, y, t) -> (!not_robot_at(r, x) S robot_at(r, x)) & (!not_tank_at(t, y) S tank_at(t, y)) & (!not_left(x, y) S left(x, y)) & (!inspected(t) S not_inspected(t))
+prop ltl_4 :
+	H(act_inspect_right("rover", "cell_1_2", "cell_2_2", "tank2") -> (!not_robot_at("rover", "cell_1_2") S robot_at("rover", "cell_1_2")) & (!not_tank_at("tank2", "cell_2_2") S tank_at("tank2", "cell_2_2")) & (!not_right("cell_1_2", "cell_2_2") S right("cell_1_2", "cell_2_2")) & (!inspected("tank2") S not_inspected("tank2")))
 

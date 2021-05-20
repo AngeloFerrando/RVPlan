@@ -18,10 +18,6 @@ def parameterisedMonitor(domain_file_name):
             break
         next_act = domain_text.find(':action', par)
         action, parameters_list, precondition_list, effect_list = extract_info(domain_text, act, par, pre, eff, next_act)
-        # dynamic_pred = set()
-        # for e in effect_list:
-        #     if not e.startswith('!'):
-        #         dynamic_pred.add(e[:e.find('(')])
         fo_ltl = ''
         for p in parameters_list:
             fo_ltl = fo_ltl + 'Forall ' + p.replace('?', '') + ' . '
@@ -46,27 +42,6 @@ def parameterisedMonitor(domain_file_name):
                 fo_ltl = fo_ltl + '(!' + precondition_list[p_i].replace('?', '')[1:] + ' S ' + 'not_' + precondition_list[p_i].replace('?', '')[1:] + ')'
             else:
                 fo_ltl = fo_ltl + '(!' + 'not_' + precondition_list[p_i].replace('?', '') + ' S ' + precondition_list[p_i].replace('?', '') + ')'
-
-            # if precondition_list[p_i][:precondition_list[p_i].find('(')] in dynamic_pred:
-            #     fo_ltl = fo_ltl + ' & (!('
-            #     aux = precondition_list[p_i]
-            #     for v in vars:
-            #         fo_ltl = fo_ltl + 'exists ' + v + '1 . '
-            #         aux = aux.replace('?' + v, v + '1')
-            #     fo_ltl = fo_ltl + aux + ') S ' + precondition_list[p_i].replace('?', '') + ')'
-        # fo_ltl = fo_ltl + ') -> @('
-        # for p_i in range(0, len(precondition_list)):
-        #     if p_i != 0: fo_ltl = fo_ltl + ' & '
-        #     fo_ltl = fo_ltl + precondition_list[p_i].replace('?', '')
-        # fo_ltl = fo_ltl + ')) & ((@' + action + '('
-        # for p_i in range(0, len(parameters_list)):
-        #     if p_i != 0: fo_ltl = fo_ltl + ', '
-        #     fo_ltl = fo_ltl + parameters_list[p_i].replace('?', '')
-        # fo_ltl = fo_ltl + ')) -> ('
-        # for p_i in range(0, len(effect_list)):
-        #     if p_i != 0: fo_ltl = fo_ltl + ' & '
-        #     fo_ltl = fo_ltl + effect_list[p_i].replace('?', '')
-        # fo_ltl = fo_ltl + ')))'
         fo_ltl_list.append(fo_ltl)
         start = eff+1
     return fo_ltl_list
@@ -86,7 +61,6 @@ def instantiatedMonitor(domain_file_name, plan_file_name):
 
     start = 0
     domain_dict = {}
-    # dynamic_pred = set()
 
     while True:
         act = domain_text.find(':action', start)
@@ -97,15 +71,11 @@ def instantiatedMonitor(domain_file_name, plan_file_name):
             break
         next_act = domain_text.find(':action', par)
         action, parameters_list, precondition_list, effect_list = extract_info(domain_text, act, par, pre, eff, next_act)
-        # for e in effect_list:
-        #     if not e.startswith('!'):
-        #         dynamic_pred.add(e[:e.find('(')])
         domain_dict[action] = (parameters_list, precondition_list, effect_list)
         start = eff+1
 
     ltl_list = []
     count = 0
-    # next_effects = []
     for p in plan_list:
         p[0] = 'act_' + p[0]
         act_def = domain_dict[p[0].replace('-', '_')]
@@ -114,8 +84,6 @@ def instantiatedMonitor(domain_file_name, plan_file_name):
             if p_i != 1: ltl = ltl + ', '
             ltl = ltl + '"' + p[p_i].replace('-', '_') + '"'
         ltl = ltl + ') -> '
-        # act_def[1].extend(next_effects)
-        # ground_preconditions = []
         for j in range(0, len(act_def[1])):
             if j != 0: ltl = ltl + ' & '
             aux = act_def[1][j]
@@ -124,85 +92,14 @@ def instantiatedMonitor(domain_file_name, plan_file_name):
                 if act_def[0][i-1] in aux:
                     vars.append(act_def[0][i-1].replace('?', ''))
                 aux = aux.replace(act_def[0][i-1], '"' + p[i].replace('-', '_') + '"')
-            # ground_preconditions.append(aux)
             if aux.startswith('!'):
                 ltl = ltl + '(!' + aux[1:] + ' S ' + 'not_' + aux[1:] + ')'
             else:
                 ltl = ltl + '(!' + 'not_' + aux + ' S ' + aux + ')'
-            # if aux[:aux.find('(')] in dynamic_pred:
-            #     d_f = open(domain_folder + '/' + aux[:aux.find('(')].replace('_', '-') + '.json', 'r')
-            #     pred_type = json.load(d_f)
-            #     d_f.close()
-            #     perm = []
-            #     n = 1
-            #     for i in pred_type:
-            #         perm.append([0,len(pred_type[i])])
-            #         n = n * len(pred_type[i])
-            #     ltl = ltl + ' & (('
-            #     for i in range(0, n):
-            #         if i != 0:
-            #             if aux.startswith('!'):
-            #                 ltl = ltl + ' | '
-            #             else:
-            #                 ltl = ltl + ' & '
-            #         incr = True
-            #         first = True
-            #         if aux.startswith('!'):
-            #             ltl = ltl + aux[1:aux.find('(')] + '('
-            #         else:
-            #             ltl = ltl + '!' + aux[:aux.find('(')] + '('
-            #         pr_c = 0
-            #         for pr in pred_type:
-            #             if first:
-            #                 first = False
-            #             else:
-            #                 ltl = ltl + ', '
-            #             ltl = ltl + '"' + pred_type[pr][perm[pr_c][0]] + '"'
-            #             if incr:
-            #                 perm[pr_c][0] = perm[pr_c][0] + 1
-            #             if perm[pr_c][0] == perm[pr_c][1]:
-            #                 perm[pr_c][0] = 0
-            #                 incr = True
-            #             else:
-            #                 incr = False
-            #             pr_c = pr_c + 1
-            #         ltl = ltl + ')'
-            #     ltl = ltl + ') S ' + aux + ')'
-        # for j in range(0, len(ground_preconditions)):
-        #     ltl = ltl + ' & ('
-        #     ltl = ltl + '(' + ' | '.join(ground_preconditions) + ')'
-        #     ltl = ltl + ' S ' + ground_preconditions[j] + ')'
         ltl = ltl + ')'
         ltl_list.append(ltl)
         count = count + 1
     return ltl_list
-            # if next_effects:
-            # ltl = ltl + '& (!('
-            # for v in vars:
-            #     ltl = ltl + 'exists ' + v + ' . '
-            # ltl = ltl + act_def[1][j].replace('?', '') + ') S ' + aux + '))'
-            # else:
-                # ltl = ltl + ')'
-        # next_effects = []
-        # for j in range(0, len(act_def[2])):
-        #     aux = act_def[2][j]
-        #     for i in range(1, len(p)):
-        #         aux = aux.replace(act_def[0][i-1], '"' + p[i].replace('-', '_') + '"')
-        #     next_effects.append(aux)
-        #
-        # ltl = ltl + ') & (@(' + p[0].replace('-', '_') + '('
-        # for p_i in range(1, len(p)):
-        #     if p_i != 1: ltl = ltl + ', '
-        #     ltl = ltl + '"' + p[p_i].replace('-', '_') + '"'
-        # ltl = ltl + ')) -> ('
-        # for j in range(0, len(act_def[2])):
-        #     if j != 0: ltl = ltl + ' & '
-        #     aux = act_def[2][j]
-        #     for i in range(1, len(p)):
-        #         aux = aux.replace(act_def[0][i-1], '"' + p[i].replace('-', '_') + '"')
-        #     ltl = ltl + aux
-        # ltl = ltl + '))))'
-
 
 def extract_info(domain_text, act, par, pre, eff, next_act):
     action = 'act_' + domain_text[act+7:par].replace('\n', '').replace('-', '_').strip()
@@ -273,8 +170,7 @@ def main(args):
         f.close()
         prop_time = (time.time() - start_time)
         print("#Property generation# --- %s seconds ---" % (time.time() - start_time))
-        mon_time = start()
-        return prop_time, mon_time
+        return prop_time
     elif len(args) == 3:
         ltl_list = instantiatedMonitor(args[1], args[2])
         for ltl in ltl_list:
@@ -288,48 +184,9 @@ def main(args):
         f.close()
         prop_time = (time.time() - start_time)
         print("#Property generation# --- %s seconds ---" % (time.time() - start_time))
-        mon_time = start()
-        return prop_time, mon_time
+        return prop_time
         # os.system('scalac -cp .:./dejavu_akka.jar TraceMonitor.scala 2>&1')
     else:
         print('usage: <domain_file_name> <plan_file_name> (<plan_file_name> is required only for the instantiated version)')
-def start():
-    start_time = time.time()
-    os.system('java -cp ./online/dejavu.jar dejavu.Verify ./out/prop.qtl')
-    mon_time = (time.time() - start_time)
-    print("#Monitor generation# --- %s seconds ---" % (time.time() - start_time))
-    # os.system('cp ./TraceMonitor.scala ./online/src/main/scala/')
-    # os.system('cp ./TraceMonitor.scala ../dejavu/')
-    return mon_time
 if __name__ == '__main__':
     main(sys.argv)
-
-
-
-
-
-
-# LTL
-# for p in plan_list:
-#     act_def = domain_dict[p[0]]
-#     ltl = ''
-#     for i in range(0, count):
-#         ltl = 'X(' + ltl
-#     for j in range(0, len(act_def[1])):
-#         if j != 0: ltl = ltl + ' & '
-#         aux = act_def[1][j]
-#         for i in range(1, len(p)):
-#             aux = aux.replace(act_def[0][i-1], p[i])
-#         ltl = ltl + aux
-#     ltl = ltl + ' & X('
-#     for j in range(0, len(act_def[2])):
-#         if j != 0: ltl = ltl + ' & '
-#         aux = act_def[2][j]
-#         for i in range(1, len(p)):
-#             aux = aux.replace(act_def[0][i-1], p[i])
-#         ltl = ltl + aux
-#     ltl = ltl + ')'
-#     for i in range(0, count):
-#         ltl = ltl + ')'
-#     ltl_list.append(ltl)
-#     count = count + 1
