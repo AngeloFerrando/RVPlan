@@ -18,10 +18,10 @@ def parameterisedMonitor(domain_file_name):
             break
         next_act = domain_text.find(':action', par)
         action, parameters_list, precondition_list, effect_list = extract_info(domain_text, act, par, pre, eff, next_act)
-        dynamic_pred = set()
-        for e in effect_list:
-            if not e.startswith('!'):
-                dynamic_pred.add(e[:e.find('(')])
+        # dynamic_pred = set()
+        # for e in effect_list:
+        #     if not e.startswith('!'):
+        #         dynamic_pred.add(e[:e.find('(')])
         fo_ltl = ''
         for p in parameters_list:
             fo_ltl = fo_ltl + 'Forall ' + p.replace('?', '') + ' . '
@@ -42,15 +42,18 @@ def parameterisedMonitor(domain_file_name):
                 else:
                     vars.append(precondition_list[p_i][index+1:].replace(')', '').replace(',', '').strip())
                 index = index1
-            fo_ltl = fo_ltl + 'P(' + precondition_list[p_i].replace('?', '') + ')'
-            if precondition_list[p_i][:precondition_list[p_i].find('(')] in dynamic_pred:
-                fo_ltl = fo_ltl + ' & (!('
-                aux = precondition_list[p_i]
-                for v in vars:
-                    fo_ltl = fo_ltl + 'exists ' + v + '1 . '
-                    aux = aux.replace('?' + v, v + '1')
-                fo_ltl = fo_ltl + aux + ') S ' + precondition_list[p_i].replace('?', '') + ')'
-        fo_ltl = fo_ltl
+            if precondition_list[p_i].startswith('!'):
+                fo_ltl = fo_ltl + '(!' + precondition_list[p_i].replace('?', '')[1:] + ' S ' + 'not_' + precondition_list[p_i].replace('?', '')[1:] + ')'
+            else:
+                fo_ltl = fo_ltl + '(!' + 'not_' + precondition_list[p_i].replace('?', '') + ' S ' + precondition_list[p_i].replace('?', '') + ')'
+
+            # if precondition_list[p_i][:precondition_list[p_i].find('(')] in dynamic_pred:
+            #     fo_ltl = fo_ltl + ' & (!('
+            #     aux = precondition_list[p_i]
+            #     for v in vars:
+            #         fo_ltl = fo_ltl + 'exists ' + v + '1 . '
+            #         aux = aux.replace('?' + v, v + '1')
+            #     fo_ltl = fo_ltl + aux + ') S ' + precondition_list[p_i].replace('?', '') + ')'
         # fo_ltl = fo_ltl + ') -> @('
         # for p_i in range(0, len(precondition_list)):
         #     if p_i != 0: fo_ltl = fo_ltl + ' & '
@@ -68,7 +71,7 @@ def parameterisedMonitor(domain_file_name):
         start = eff+1
     return fo_ltl_list
 
-def instantiatedMonitor(domain_file_name, plan_file_name, domain_folder):
+def instantiatedMonitor(domain_file_name, plan_file_name):
     domain = open(domain_file_name, 'r')
     domain_text = domain.read()
     domain.close()
@@ -83,7 +86,7 @@ def instantiatedMonitor(domain_file_name, plan_file_name, domain_folder):
 
     start = 0
     domain_dict = {}
-    dynamic_pred = set()
+    # dynamic_pred = set()
 
     while True:
         act = domain_text.find(':action', start)
@@ -94,9 +97,9 @@ def instantiatedMonitor(domain_file_name, plan_file_name, domain_folder):
             break
         next_act = domain_text.find(':action', par)
         action, parameters_list, precondition_list, effect_list = extract_info(domain_text, act, par, pre, eff, next_act)
-        for e in effect_list:
-            if not e.startswith('!'):
-                dynamic_pred.add(e[:e.find('(')])
+        # for e in effect_list:
+        #     if not e.startswith('!'):
+        #         dynamic_pred.add(e[:e.find('(')])
         domain_dict[action] = (parameters_list, precondition_list, effect_list)
         start = eff+1
 
@@ -122,39 +125,49 @@ def instantiatedMonitor(domain_file_name, plan_file_name, domain_folder):
                     vars.append(act_def[0][i-1].replace('?', ''))
                 aux = aux.replace(act_def[0][i-1], '"' + p[i].replace('-', '_') + '"')
             # ground_preconditions.append(aux)
-            ltl = ltl + 'P(' + aux + ')'
-            if aux[:aux.find('(')] in dynamic_pred:
-                d_f = open(domain_folder + '/' + aux[:aux.find('(')].replace('_', '-') + '.json', 'r')
-                pred_type = json.load(d_f)
-                d_f.close()
-                perm = []
-                n = 1
-                for i in pred_type:
-                    perm.append([0,len(pred_type[i])])
-                    n = n * len(pred_type[i])
-                ltl = ltl + ' & (('
-                for i in range(0, n):
-                    if i != 0: ltl = ltl + ' & '
-                    incr = True
-                    first = True
-                    ltl = ltl + '!' + aux[:aux.find('(')] + '('
-                    pr_c = 0
-                    for pr in pred_type:
-                        if first:
-                            first = False
-                        else:
-                            ltl = ltl + ', '
-                        ltl = ltl + '"' + pred_type[pr][perm[pr_c][0]] + '"'
-                        if incr:
-                            perm[pr_c][0] = perm[pr_c][0] + 1
-                        if perm[pr_c][0] == perm[pr_c][1]:
-                            perm[pr_c][0] = 0
-                            incr = True
-                        else:
-                            incr = False
-                        pr_c = pr_c + 1
-                    ltl = ltl + ')'
-                ltl = ltl + ') S ' + aux + ')'
+            if aux.startswith('!'):
+                ltl = ltl + '(!' + aux[1:] + ' S ' + 'not_' + aux[1:] + ')'
+            else:
+                ltl = ltl + '(!' + 'not_' + aux + ' S ' + aux + ')'
+            # if aux[:aux.find('(')] in dynamic_pred:
+            #     d_f = open(domain_folder + '/' + aux[:aux.find('(')].replace('_', '-') + '.json', 'r')
+            #     pred_type = json.load(d_f)
+            #     d_f.close()
+            #     perm = []
+            #     n = 1
+            #     for i in pred_type:
+            #         perm.append([0,len(pred_type[i])])
+            #         n = n * len(pred_type[i])
+            #     ltl = ltl + ' & (('
+            #     for i in range(0, n):
+            #         if i != 0:
+            #             if aux.startswith('!'):
+            #                 ltl = ltl + ' | '
+            #             else:
+            #                 ltl = ltl + ' & '
+            #         incr = True
+            #         first = True
+            #         if aux.startswith('!'):
+            #             ltl = ltl + aux[1:aux.find('(')] + '('
+            #         else:
+            #             ltl = ltl + '!' + aux[:aux.find('(')] + '('
+            #         pr_c = 0
+            #         for pr in pred_type:
+            #             if first:
+            #                 first = False
+            #             else:
+            #                 ltl = ltl + ', '
+            #             ltl = ltl + '"' + pred_type[pr][perm[pr_c][0]] + '"'
+            #             if incr:
+            #                 perm[pr_c][0] = perm[pr_c][0] + 1
+            #             if perm[pr_c][0] == perm[pr_c][1]:
+            #                 perm[pr_c][0] = 0
+            #                 incr = True
+            #             else:
+            #                 incr = False
+            #             pr_c = pr_c + 1
+            #         ltl = ltl + ')'
+            #     ltl = ltl + ') S ' + aux + ')'
         # for j in range(0, len(ground_preconditions)):
         #     ltl = ltl + ' & ('
         #     ltl = ltl + '(' + ' | '.join(ground_preconditions) + ')'
@@ -262,8 +275,8 @@ def main(args):
         print("#Property generation# --- %s seconds ---" % (time.time() - start_time))
         mon_time = start()
         return prop_time, mon_time
-    elif len(args) == 4:
-        ltl_list = instantiatedMonitor(args[1], args[2], args[3])
+    elif len(args) == 3:
+        ltl_list = instantiatedMonitor(args[1], args[2])
         for ltl in ltl_list:
             print(ltl)
         f = open('./out/prop.qtl', 'w')

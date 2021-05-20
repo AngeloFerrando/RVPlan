@@ -10,7 +10,7 @@ def main(args):
     for n in range(int(args[1]), int(args[2]), int(args[3])):
         with open('res.csv', 'a') as f:
             generate_plan.main([None, n])
-            # prop_time, mon_time = translator.main([None, 'domain.pddl', 'new_plan.txt', 'domain'])
+            # prop_time, mon_time = translator.main([None, 'domain.pddl', 'new_plan.txt'])
             # f.write(str(n) + ',' + str(prop_time) + ',' + str(mon_time))
             start_time = time.time()
             os.system('../dejavu/dejavu new_plan.csv')
