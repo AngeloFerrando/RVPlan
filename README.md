@@ -38,7 +38,7 @@ This will generate the TraceMonitor.scala file in your folder. This represents t
 
 In the previous step, we obtained the monitor, now we can use it to verify a trace (offline for now).
 
-First, we compile the scala monitor we obtained at previous step.
+First, we compile the Scala monitor we obtained at previous step.
 ```bash
 -$  scalac -cp .:<dejavu_home>/out/artifacts/dejavu_jar/dejavu.jar TraceMonitor.scala 2>&1 | grep -v "warning"
 ```
